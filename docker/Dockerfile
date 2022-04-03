@@ -16,10 +16,4 @@ COPY ./dptweb-1.0.war /opt/apache-tomcat-9.0.62/webapps/
 
 CMD ["/opt/apache-tomcat-9.0.62/bin/catalina.sh", "run"]
 
-RUN service docker status
-
-RUN service docker start
-
-RUN service docker status
-
 
