@@ -1,52 +1,44 @@
-name: Fetch and Generate Configuration
+name: CI
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  fetch-and-generate-configuration:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install AWS CLI
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-west-2
+
+      - name: Fetch SSM Parameter values
+        id: fetch-ssm-values
         run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
+          echo "::set-output name=host::$(aws ssm get-parameter --name /myapp/database/host --query 'Parameter.Value' --output text)"
+          echo "::set-output name=port::$(aws ssm get-parameter --name /myapp/database/port --query 'Parameter.Value' --output text)"
+          echo "::set-output name=username::$(aws ssm get-parameter --name /myapp/database/username --query 'Parameter.Value' --output text)"
+          echo "::set-output name=password::$(aws ssm get-parameter --name /myapp/database/password --query 'Parameter.Value' --output text)"
 
-      - name: Fetch values from AWS SSM
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
+      - name: Run tests with fetched values
         run: |
-          export HOST=$(aws ssm get-parameter --name /myapp/database/host --query "Parameter.Value" --output text)
-          export PORT=$(aws ssm get-parameter --name /myapp/database/port --query "Parameter.Value" --output text)
-          export USERNAME=$(aws ssm get-parameter --name /myapp/database/username --query "Parameter.Value" --output text)
-          export PASSWORD=$(aws ssm get-parameter --name /myapp/database/password --query "Parameter.Value" --output text)
-   
-      - name: Download confd.deb
-        run: |
-          curl -L -o confd.deb https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64.deb
-
-      - name: Install confd
-        run: |
-          sudo dpkg -i confd.deb
-
-
-      - name: Display existing myconfig.toml
-        run: cat confd/myconfig.toml
-
-      - name: Configure and generate configuration with confd
-        run: confd -onetime -confdir confd
-
-      - name: Display generated configuration
-        run: cat /tmp/myconfig.conf
-
-      - name: Run Hello World Application
-        run: php helloworld.php
-
-
+          php test.php ${{ steps.fetch-ssm-values.outputs.host }} ${{ steps.fetch-ssm-values.outputs.port }} ${{ steps.fetch-ssm-values.outputs.username }} ${{ steps.fetch-ssm-values.outputs.password }}
