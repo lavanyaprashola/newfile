@@ -28,13 +28,14 @@ jobs:
           export USERNAME=$(aws ssm get-parameter --name /myapp/database/username --query "Parameter.Value" --output text)
           export PASSWORD=$(aws ssm get-parameter --name /myapp/database/password --query "Parameter.Value" --output text)
    
-      - name: Install confd
-        run: |
-          sudo dpkg -i confd.deb
-      - name: Install confd
+      - name: Download confd.deb
         run: |
           curl -L -o confd.deb https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64.deb
+
+      - name: Install confd
+        run: |
           sudo dpkg -i confd.deb
+
 
       - name: Display existing myconfig.toml
         run: cat confd/myconfig.toml
