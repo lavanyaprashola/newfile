@@ -1,0 +1,46 @@
+name: Fetch and Generate Configuration
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  fetch-and-generate-configuration:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+      - name: Fetch values from AWS SSM
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_KEY }}
+        run: |
+          export HOST=$(aws ssm get-parameter --name /myapp/database/host --query "Parameter.Value" --output text)
+          export PORT=$(aws ssm get-parameter --name /myapp/database/port --query "Parameter.Value" --output text)
+          export USERNAME=$(aws ssm get-parameter --name /myapp/database/username --query "Parameter.Value" --output text)
+          export PASSWORD=$(aws ssm get-parameter --name /myapp/database/password --query "Parameter.Value" --output text)
+
+      - name: Install confd
+        run: |
+          curl -L -o confd.deb https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64.deb
+          sudo dpkg -i confd.deb
+
+      - name: Display existing myconfig.toml
+        run: cat confd/myconfig.toml
+
+      - name: Configure and generate configuration with confd
+        run: confd -onetime -confdir confd
+
+      - name: Display generated configuration
+        run: cat /tmp/myconfig.conf
+
+      - name: Run Hello World Application
+        run: php helloworld.php
