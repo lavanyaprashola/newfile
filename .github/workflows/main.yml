@@ -31,6 +31,9 @@ jobs:
             export PATH="$PATH:/opt/confd/bin"
             confd -version
       - name : fetch value
-        run : confd -onetime -backend ssm
+        run : |
+           cd /opt/confd/bin/confd
+           confd -onetime -backend ssm
+           
         
    
