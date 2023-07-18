@@ -33,7 +33,10 @@ jobs:
           sudo mkdir -p /etc/confd/templates 
           sudo cp -rf ${{ github.workspace }}/etc/confd/*  /etc/confd/
           sudo rm -rf /tmp/confd
+          echo " "
           sudo -i
           sudo touch /var/log/confd.log
+          echo " "
           sudo chmod 666 /var/log/confd.log
+          echo ""
           sudo confd -onetime -backend ssm > /var/log/confd.log 2>&1
