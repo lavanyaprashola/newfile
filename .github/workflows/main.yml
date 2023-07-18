@@ -29,8 +29,8 @@ jobs:
           wget $confd_url
           chmod +x confd-$confd_ver-linux-amd64
           sudo mv confd-$confd_ver-linux-amd64 /bin/confd 
-          mkdir -p /etc/confd/conf.d
-          mkdir -p /etc/confd/templates
+          sudo mkdir -p /etc/confd/conf.d
+          sudo mkdir -p /etc/confd/templates
            
         
    
