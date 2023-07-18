@@ -31,10 +31,7 @@ jobs:
             export PATH="$PATH:/opt/confd/bin"
             pwd
             confd -version
-      - name : fetch value
-        run : |
-           cd /home/runner/work/confd-try/confd-try
-           confd -onetime -backend ssm
+            confd -onetime -backend ssm
            
         
    
