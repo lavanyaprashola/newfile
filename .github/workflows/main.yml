@@ -32,6 +32,4 @@ jobs:
           sudo mkdir -p /etc/confd/conf.d
           sudo mkdir -p /etc/confd/templates 
           sudo cp -rf ${{ github.workspace }}/etc/confd/*  /etc/confd/
-          touch /var/log/confd.log 
-          chmod 666 /var/log/confd.log
-          confd -onetime -backend ssm > /var/log/confd.log 2>&1
+          confd -onetime -backend ssm 
