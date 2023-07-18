@@ -34,5 +34,5 @@ jobs:
           sudo cp -rf ${{ github.workspace }}/etc/confd/*  /etc/confd/
           sudo rm -rf /tmp/confd
           sudo -i
-          touch /var/log/confd.log && chmod 666 /var/log/confd.log
+          sudo touch /var/log/confd.log && chmod 666 /var/log/confd.log
           sudo confd -onetime -backend ssm > /var/log/confd.log 2>&1
