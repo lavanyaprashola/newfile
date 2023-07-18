@@ -33,7 +33,7 @@ jobs:
             confd -version
       - name : fetch value
         run : |
-           cd /opt/confd/bin/
+           cd /home/runner/work/confd-try/confd-try
            confd -onetime -backend ssm
            
         
