@@ -1,5 +1,5 @@
 [template]
-src =  "templates/myconfig.conf.tmpl"
+src =  "myconfig.conf.tmpl"
 dest = "/tmp/myconfig.conf"
 keys = [
     "/myapp/database/host",
