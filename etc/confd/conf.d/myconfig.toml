@@ -4,6 +4,6 @@ dest = "/tmp/myconfig.conf"
 keys = [
     "/myapp/database/host",
     "/myapp/database/port",
-    "/myapp/database/username"
-    "/myapp/database/password"
+    "/myapp/database/username",
+    "/myapp/database/password",
 ]
