@@ -1,9 +1,0 @@
-[template]
-src = "templates/myconfig.conf.tmpl"
-dest = "/tmp/myconfig.conf"
-keys = [
-    "/myapp/database/host",
-    "/myapp/database/port",
-    "/myapp/database/username"
-    "/myapp/database/password"
-]
