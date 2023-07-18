@@ -1,7 +1,8 @@
 [myconfig]
 database {
-    host = "{{ .Values.host }}"
-    port = "{{ .Values.port }}"
-    username = "{{ .Values.username }}"
-    password = "{{ .Values.password }}"
+database_host = {{getv "/myapp/database/host"}}
+database_port = {{getv "/myapp/database/port"}}
+database_username = {{getv "/myapp/database/username"}}
+database_password = {{getv "/myapp/database/password"}}
 }
+ 
