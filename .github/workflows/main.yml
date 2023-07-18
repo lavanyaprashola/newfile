@@ -21,16 +21,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.SECRET_KEY }}
-          aws-region: us-west-2
-      - name: Fetch SSM Parameter
-        id: ssm-parameter
-        run: |
-          parameter_value=$(aws ssm get-parameter --name /myapp/database/host --with-decryption --query "Parameter.Value" --output text)
-          echo "::set-output name=value::$parameter_value"
-
-      - name: Use the fetched value
-        run: |
-          echo "Fetched value: ${{ steps.ssm-parameter.outputs.value }}"
+          aws-region: eu-north-1
+   
 
       # Add more steps for your workflow as needed
 
